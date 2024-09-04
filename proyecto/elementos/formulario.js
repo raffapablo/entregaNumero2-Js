@@ -4,6 +4,7 @@ const toggleCarritoButton = document.getElementById('toggleCarrito');
 const Carrito = JSON.parse(localStorage.getItem("carrito")) || [];
 const URLapi = 'https://jsonplaceholder.typicode.com/todos/?_limit=10'
 const comentariosCont = document.getElementById("comentarios")
+const error = 'Hubo un error al obtener los usuarios'
 
 function spawnDeFormulario() {
     const contenedor = document.createElement('div');
@@ -160,14 +161,16 @@ async function llamadoraDeApi (url){
 llamadoraDeApi(URLapi)
 
 async function traerUsuarios() {
-    const usuarios = await llamadoraDeApi(URLapi);
-    if (usuarios) {
-        usuarios.forEach(el => {
-            spawnDeComentarios(el.userId, el.title); 
-            console.log(el.title)
-        });
-    } else {
-        console.log('Error al obtener los usuarios');
+    try {
+        const usuarios = await llamadoraDeApi(URLapi);
+        if (usuarios) {
+            usuarios.forEach(el => {
+                spawnDeComentarios(el.userId, el.title); 
+                console.log(el.title);
+            });
+        } 
+    } catch (error) {
+        console.error(error);
     }
 }
 
