@@ -1,5 +1,8 @@
 const productos = document.getElementById("productos")
+const productosNuestrosProductos = document.getElementById("productosNuestrosProductos")
 const carrito = document.getElementById("carrito")
+const Miformulario = document.getElementById('formulario')
+
 const Carrito = JSON.parse(localStorage.getItem("carrito")) || []
  
 
@@ -60,18 +63,145 @@ const product = [
         title: 'TIPO CAMISETA',
         description: 'Pack x200 unidades camisetas polietileno personalizadas..',
         price: 160.00
+    },
+    {
+        id: 9,
+        image: './image/9.jpg',
+        title: 'ALGODÓN',
+        description: 'Pack x100 unidades bolsas de algodón 30x40 personalizadas.',
+        price: 130.00
+    },
+    {
+        id: 10,
+        image: './image/10.jpg',
+        title: 'YUTE',
+        description: 'Pack x50 unidades bolsas de yute 40x50 personalizadas.',
+        price: 140.00
+    },
+    {
+        id: 11,
+        image: './image/11.jpg',
+        title: 'RAFIA',
+        description: 'Pack x200 unidades bolsas de rafia 20x30 personalizadas.',
+        price: 110.00
+    },
+    {
+        id: 12,
+        image: './image/12.jpg',
+        title: 'KRAFT',
+        description: 'Pack x100 unidades bolsas de papel kraft 25x35 personalizadas.',
+        price: 100.00
+    },
+    {
+        id: 13,
+        image: './image/13.jpg',
+        title: 'NEOPRENO',
+        description: 'Pack x50 unidades bolsas de neopreno 30x40 personalizadas.',
+        price: 160.00
+    },
+    {
+        id: 14,
+        image: './image/14.jpg',
+        title: 'TERCIOPILO',
+        description: 'Pack x30 unidades bolsas de terciopelo 20x30 personalizadas.',
+        price: 180.00
+    },
+    {
+        id: 15,
+        image: './image/15.jpg',
+        title: 'MICROFIBRA',
+        description: 'Pack x100 unidades bolsas de microfibra 25x30 personalizadas.',
+        price: 140.00
+    },
+    {
+        id: 16,
+        image: './image/16.jpg',
+        title: 'FIELTRO',
+        description: 'Pack x50 unidades bolsas de fieltro 20x25 personalizadas.',
+        price: 130.00
+    },
+    {
+        id: 17,
+        image: './image/17.jpg',
+        title: 'VINIL',
+        description: 'Pack x100 unidades bolsas de vinil 30x40 personalizadas.',
+        price: 150.00
+    },
+    {
+        id: 18,
+        image: './image/18.jpg',
+        title: 'ECOMMERCE',
+        description: 'Pack x200 unidades bolsas ecommerce 25x30 personalizadas.',
+        price: 170.00
+    },
+    {
+        id: 19,
+        image: './image/19.jpg',
+        title: 'FIBRA DE COCO',
+        description: 'Pack x50 unidades bolsas de fibra de coco 30x40 personalizadas.',
+        price: 160.00
+    },
+    {
+        id: 20,
+        image: './image/20.jpg',
+        title: 'DE REGALO',
+        description: 'Pack x30 unidades bolsas de regalo 20x25 personalizadas.',
+        price: 120.00
     }
 ];
 
 
 
-function buttonSumar (titulo){
-    const producto = Carrito.find(el => {
-        return el.titulo === titulo
+
+function generadoraDeCards ( titulo, imagen, descripcion, precio, id){
+
+const cardContainer = document.createElement("div")
+const titleDOM  = document.createElement("p")
+const imgcontDOM = document.createElement("div")
+const imageDOM  = document.createElement("img")
+const pContainerDOM = document.createElement("div") 
+const descriptionDOM  = document.createElement("p")
+const priceDOM  = document.createElement("p")
+const buttonDOM  = document.createElement("button")
+
+cardContainer.classList.add("card")
+titleDOM.classList.add("titulo-item")
+imageDOM.classList.add("img-card")
+descriptionDOM.classList.add("contenido-item")
+priceDOM.classList.add("price")
+buttonDOM.classList.add("button-card")
+
+titleDOM.innerText = titulo
+imageDOM.src = imagen
+descriptionDOM.innerText = descripcion
+priceDOM.innerText = `$${precio}`
+buttonDOM.innerText = "AGREGAR AL CARRITO"
+buttonDOM.addEventListener("click", () =>{
+    agregarAlCarrito (titulo, precio, imagen, id), mostrarAlertDeConfirmacion(titulo)
     })
-    producto.cantidad +=1
-    actualizarCarrito()
+
+
+
+cardContainer.appendChild(titleDOM)
+cardContainer.appendChild(imageDOM)
+cardContainer.appendChild(descriptionDOM)
+cardContainer.appendChild(priceDOM)
+cardContainer.appendChild(buttonDOM)
+return cardContainer
 }
+
+
+const productosDestacados = product.slice(0, 8)
+productosDestacados.forEach(el => {
+    
+    const miProducto = generadoraDeCards(el.title, el.image, el.description, el.price, el.id)
+    productos.appendChild(miProducto)
+})
+
+
+
+
+
 
 function agregarAlCarrito (titulo, precio, id){
     
@@ -94,47 +224,54 @@ function agregarAlCarrito (titulo, precio, id){
       })
      }
      
-     actualizarCarrito ()
-     
-     
+     actualizarCarrito ()  
   }
+
+
   document.addEventListener("DOMContentLoaded",()=>{
     actualizarCarrito()
 })
 
 
-function buttonRestar (titulo){
-    const producto = Carrito.find(el => {
-        return el.titulo === titulo
+
+function actualizarCarrito (){
+    carrito.innerHTML = ''
+
+    const mensaje = document.createElement('p')
+    mensaje.classList.add('titulo-item-3')
+    mensaje.innerText = '¡UPS!   parece que no has agregado ningun articulo al carrito.'
+
+    const totalAPagar = document.createElement("p")
+    totalAPagar.classList.add("titulo-item-3")
+    
+    const total = Carrito.reduce((acc, el) =>{
+        return acc + el.cantidad * el.precio
+    }, 0)
+   
+    totalAPagar.innerHTML = `<a class:"titulo-item-3" href="../proyecto/formulario.html"> Finalizar compra</a>`
+    
+    
+    Carrito.forEach(el => {
+        carrito.appendChild(spawnDeCarrito (el.titulo, el.precio, el.cantidad, el.id))
+        carrito.appendChild(totalAPagar)
+        localStorage.setItem("carrito", JSON.stringify(Carrito))
     })
-
-    if(producto.cantidad <= 1){
-        let array = Carrito.map(el => {
-            return el.titulo
-        })
-
-        let index = array.indexOf(titulo)
-
-        Carrito.splice(index, 1)
-    }else{
-        producto.cantidad -= 1
+    mostrarMensaje(mensaje)
 }
-actualizarCarrito()
-}
-
 
 
 function spawnDeCarrito (titulo, precio, cantidad, id){
+    
+    
     const contenedorDeCarrito = document.createElement("div")
     const tituloDeArticulo = document.createElement("p")
     const precioDeArticulo = document.createElement("p")
     const imageDOM  = document.createElement("img")
     const cantidadDelArticulo = document.createElement("p")
-    const buttonContainer = document.createElement("div")
     const sumarUnidad = document.createElement("button")
     const restarUnidad = document.createElement("button")
+    const totalXProducto = document.createElement('p')
 
-    buttonContainer.classList.add("buttonCont")
     contenedorDeCarrito.classList.add("carritoCont")
     tituloDeArticulo.classList.add("titulo-item-1")
     precioDeArticulo.classList.add("titulo-item-1")
@@ -142,9 +279,12 @@ function spawnDeCarrito (titulo, precio, cantidad, id){
     sumarUnidad.classList.add("boton")
     restarUnidad.classList.add("boton")
     imageDOM.classList.add("imgCardCart")
+    totalXProducto.classList.add('titulo-item-1')
 
-    sumarUnidad.addEventListener("click",() => {buttonSumar (titulo) })
-    restarUnidad.addEventListener("click",() => {buttonRestar (titulo) })
+    const total = precio * cantidad
+
+    sumarUnidad.addEventListener("click",() => {buttonSumar (id) })
+    restarUnidad.addEventListener("click",() => {buttonRestar (id) })
 
 
     imageDOM.src = `./${id}`
@@ -155,79 +295,82 @@ function spawnDeCarrito (titulo, precio, cantidad, id){
     if(cantidad == 1){
         restarUnidad.innerText= "x"
     }
-    cantidadDelArticulo.innerText = `Unidades: ${cantidad}`
+    cantidadDelArticulo.innerText = `Unidades: ${cantidad} ($${precio})`
+    totalXProducto.innerText = `$${total}`
 
+    
     contenedorDeCarrito.appendChild(imageDOM)
     contenedorDeCarrito.appendChild(sumarUnidad)
     contenedorDeCarrito.appendChild(restarUnidad)
     contenedorDeCarrito.appendChild(tituloDeArticulo)
     contenedorDeCarrito.appendChild(cantidadDelArticulo)
-    contenedorDeCarrito.appendChild(precioDeArticulo)
-    
-   
-    
+    contenedorDeCarrito.appendChild(totalXProducto)
+
 
     return contenedorDeCarrito
 }
-function actualizarCarrito (){
-    carrito.innerHTML = ''
-    const totalAPagar = document.createElement("p")
-    totalAPagar.classList.add("titulo-item-3")
-    const total = Carrito.reduce((acc, el) =>{
-        return acc + el.cantidad * el.precio
-    }, 0)
-    totalAPagar.innerText = `Continuar con el pago     ($${total}) (funcionara en la proxima entrega)`
-    Carrito.forEach(el => {
-       
-        carrito.appendChild(spawnDeCarrito (el.titulo, el.precio, el.cantidad, el.id))
-        carrito.appendChild(totalAPagar)
-        localStorage.setItem("carrito", JSON.stringify(Carrito))
-    })
+
+
+
+function toggleCarrito() {
+     
+    if (carrito.style.display === "none" || carrito.style.display === "") {
+        carrito.style.display = "block";
+        document.getElementById("toggleCarrito").innerHTML = '<img src="./image/cancelar.png" alt=""></img>';
+    } else {
+        carrito.style.display = "none";
+        document.getElementById("toggleCarrito").innerHTML = '<img src="./image/carrito-de-compras.png" alt=""></img>'
+    }
 }
 
-function generadoraDeCards ( titulo, imagen, descripcion, precio, id){
-
-const cardContainer = document.createElement("div")
-const titleDOM  = document.createElement("p")
-const imgcontDOM = document.createElement("div")
-const imageDOM  = document.createElement("img")
-const pContainerDOM = document.createElement("div") 
-const descriptionDOM  = document.createElement("p")
-const priceDOM  = document.createElement("p")
-const buttonDOM  = document.createElement("button")
-
-cardContainer.classList.add("card")
-titleDOM.classList.add("titulo-item")
-imageDOM.classList.add("img-card")
-descriptionDOM.classList.add("contenido-item")
-priceDOM.classList.add("price")
-buttonDOM.classList.add("button-card")
+document.getElementById("toggleCarrito").addEventListener("click", toggleCarrito);
 
 
-titleDOM.innerText = titulo
-imageDOM.src = imagen
-descriptionDOM.innerText = descripcion
-priceDOM.innerText = `$${precio}`
-buttonDOM.innerText = "AGREGAR AL CARRITO"
-buttonDOM.addEventListener("click", () =>{
-    agregarAlCarrito (titulo, precio, imagen, id)
+function buttonSumar(id) {
+    const producto = Carrito.find(el => el.id === id);
+    if (producto) {
+        producto.cantidad += 1;
+    }
+    actualizarCarrito();
+}
+function buttonRestar(id) {
+    const producto = Carrito.find(el => el.id === id);
+
+    if (producto.cantidad <= 1) {
+        const index = Carrito.findIndex(el => el.id === id);
+        Carrito.splice(index, 1);
+    } else {
+        producto.cantidad -= 1;
+    }
+
+    actualizarCarrito();
+}
+actualizarCarrito()
+
+
+
+function mostrarMensaje (mensaje){
+    document.getElementById("carrito")
+
+    if(Carrito.length === 0){
+        carrito.appendChild(mensaje)
+        localStorage.clear()
+    }
+}
+
+function mostrarAlertDeConfirmacion (titulo){
+     Swal.fire({
+        title: `bolsa de ${titulo} fue agregada al carrito`,
+        icon: 'success',
+        toast: true,
+        showConfirmButton: false,
+        position: "top",
+        timer: 2000,
+        scrollbarPadding: false, 
+        timerProgressBar: true,
+
+      })
     
-})
-
-
-
-cardContainer.appendChild(titleDOM)
-cardContainer.appendChild(imageDOM)
-cardContainer.appendChild(descriptionDOM)
-cardContainer.appendChild(priceDOM)
-cardContainer.appendChild(buttonDOM)
-return cardContainer
 }
-
-product.forEach(el => {
-    const miProducto = generadoraDeCards(el.title, el.image, el.description, el.price, el.id )
-    productos.appendChild(miProducto)
-})
-
 
 
