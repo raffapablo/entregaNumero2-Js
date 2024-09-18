@@ -44,7 +44,7 @@ function spawnDeFormulario() {
             mostrarAlertaCampoVacio()
         }
         else{
-            mostrarAlertDeConfirmacion(nombre, apellido);
+            mostrarAlertDeConfirmacion(nombre);
         }
     });
 
@@ -166,7 +166,7 @@ async function traerUsuarios() {
         if (usuarios) {
             usuarios.forEach(el => {
                 spawnDeComentarios(el.userId, el.title); 
-                console.log(el.title);
+              
             });
         } 
     } catch (error) {
@@ -196,7 +196,6 @@ async function traerUsuarios() {
  traerUsuarios()
 
  
-
 
 
 
